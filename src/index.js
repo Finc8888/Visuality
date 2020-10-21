@@ -35,34 +35,41 @@ myPanel.addElement(label);
 
 // /* Create text label and modify it */
 labelSpan = myPanel.createLabel();
-labelSpan.setText("");
-labelSpan.setLocationXY(30,220);
-labelSpan.setBold(true);
-labelSpan.setFontFamily("sans-serif");
+labelSpan.setText("123");
 labelSpan.setFontSize(24);
+labelSpan.setLocationXY(30,220);
 myPanel.addElement(labelSpan);
 
-/* Create text label and modify it */
+/* Create text tspan element, modify it and adding in LabelElement*/
 onePart = myPanel.createTspan();
 onePart.setText("Hi");
-onePart.setLocationXY(30,250);
 onePart.setFontColor('blue');
 onePart.setBold(true);
 onePart.setFontFamily("sans-serif");
 onePart.setFontSize(24);
-myPanel.addElement(onePart);
-console.log('onePart', onePart);
-console.log('label', label);
+onePart.setOverlined(true);
+onePart.setVerticalAnchor(jsgl.VerticalAnchor.MIDDLE);
 
-/* Create text label and modify it */
+/* Create text tspan element, modify it and adding in LabelElement*/
 twoPart = myPanel.createTspan();
 twoPart.setText(" evryone!");
-twoPart.setLocationXY(30,280);
-twoPart.setFontColor('green');
+twoPart.setFontColor('yellow');
 twoPart.setBold(true);
-twoPart.setFontFamily("sans-serif");
-twoPart.setFontSize(24);
-myPanel.addElement(twoPart);
+twoPart.setFontFamily("Verdana");
+twoPart.setVerticalAnchor(jsgl.VerticalAnchor.TOP);
+twoPart.setUnderlined(true);
+twoPart.setFontSize(20);
+
+/* Create text tspan element, modify it and adding in LabelElement*/
+threePart = myPanel.createTspan();
+threePart.setText("  and such ledy!");
+threePart.setFontColor('red');
+threePart.setBold(false);
+threePart.setFontFamily("Verdana");
+threePart.setStruckThrough(true);
+threePart.setFontSize(20);
+threePart.setVerticalAnchor(jsgl.VerticalAnchor.TOP);
 
 labelSpan.appendChild(onePart);
 labelSpan.appendChild(twoPart);
+labelSpan.appendChild(threePart);

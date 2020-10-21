@@ -8042,26 +8042,104 @@ jsgl.elements.LabelElement.prototype.setText = function(newText) {
 /**
  * @description Adds child in text lement.
  * @methodOf jsgl.elements.LabelElement#
- * @param {string} newText The new string to be displayed.
+ * @param {string} tspanElement The tspanElement will be add into LabelElement.
  * @since version 1.0
  */
-jsgl.elements.LabelElement.prototype.appendChild = function(node) {
+jsgl.elements.LabelElement.prototype.appendChild = function(tspanElement) {
+  if(!tspanElement || !tspanElement.domPresenter || !tspanElement.domPresenter.hasOwnProperty('SVGTspanElement')){
+    return;
+  }
+  this.SVGTextElement = this.domPresenter.getXmlElement();
+  this.SVGTspanElement = document.createElementNS("http://www.w3.org/2000/svg","tspan");
+  this.textNode = document.createTextNode(tspanElement.getText());
+  this.SVGTspanElement.appendChild(this.textNode);
+  this.SVGTspanElement.style.setProperty('font-family', tspanElement.getFontFamily(), null);
+  this.SVGTspanElement.style.setProperty('fill', tspanElement.getFontColor(), null);
 
-  console.log('child',node);
-  console.log('this',this);
-  let domPresenter = this.domPresenter;
-  let text = domPresenter.getXmlElement();
-  let tspan = document.createElementNS("http://www.w3.org/2000/svg","tspan");
-  let textNode = document.createTextNode(node.text);
-  tspan.style.setProperty("fill", node.fontColor, null);
-  tspan.appendChild(textNode);
-  // let textNode = document.createTextNode(node.text);
+  var underlined=tspanElement.getUnderlined(),
+      overlined=tspanElement.getOverlined(),
+      struckThrough=tspanElement.getStruckThrough(),
+      decorationString="";
 
-  text.appendChild(tspan);
+  if(underlined) decorationString="underline";
 
+  if(overlined) {
+
+    if(decorationString) {
+
+      decorationString += " overline";
+    }
+    else {
+
+      decorationString = "overline";
+    }
+  }
+
+  if(struckThrough) {
+    if(decorationString) {
+
+      decorationString+=" line-through";
+    }
+    else {
+
+      decorationString="line-through";
+    }
+  }
+
+  this.SVGTspanElement.style.fontSize = tspanElement.getFontSize()+"px";
+  this.SVGTspanElement.style.textDecoration = decorationString;
+  this.SVGTspanElement.style.fontWeight = tspanElement.getBold()?"bold":"normal";
+  this.SVGTspanElement.style.fontStyle = tspanElement.getItalics()?"italic":"normal";
+
+  this.SVGTspanElement.style.opacity = tspanElement.getOpacity();
+
+  switch(tspanElement.getHorizontalAnchor()) {
+
+    case jsgl.HorizontalAnchor.LEFT:
+
+      this.SVGTspanElement.style.setProperty('text-anchor', 'start', null);
+      break;
+
+    case jsgl.HorizontalAnchor.CENTER:
+
+      this.SVGTspanElement.style.setProperty('text-anchor', 'middle', null);
+      break;
+
+    case jsgl.HorizontalAnchor.RIGHT:
+
+      this.SVGTspanElement.style.setProperty('text-anchor', 'end', null);
+      break;
+  }
+  if(tspanElement.getX() != 0){
+
+    this.SVGTspanElement.setAttribute('x', tspanElement.getX());
+  }
+
+  switch(tspanElement.getVerticalAnchor()) {
+
+    case jsgl.VerticalAnchor.TOP:
+
+      this.SVGTspanElement.setAttribute('dy', '1em', null);
+      break;
+
+    case jsgl.VerticalAnchor.MIDDLE:
+
+      this.SVGTspanElement.setAttribute('dy', '0.6ex', null);
+      break;
+
+    case jsgl.VerticalAnchor.BOTTOM:
+
+      this.SVGTspanElement.setAttribute('dy', '0em', null);
+      break;
+  }
+  if(tspanElement.getY() != 0){
+
+    this.SVGTspanElement.setAttribute('y', tspanElement.getY());
+  }
+  this.SVGTextElement.appendChild(this.SVGTspanElement);
 
   this.onChangeRaiser.raiseEvent();
-}
+};
 
 /**
  * @description Gets the current CSS font-family string for the label.
@@ -8388,7 +8466,7 @@ jsgl.elements.TspanElement=function(domPresenter, panel, x,y,text,zIndex) {
    * @type jsgl.VerticalAnchor
    * @private
    */
-  this.verticalAnchor = jsgl.VerticalAnchor.TOP;
+  this.verticalAnchor = jsgl.VerticalAnchor.BOTTOM;
 
   /**
    * Opacity of the Tspan.
@@ -8441,7 +8519,7 @@ jsgl.elements.TspanElement.prototype.getX = function() {
 jsgl.elements.TspanElement.prototype.setX = function(newX) {
 
   this.location.X=newX;
-  this.onChangeRaiser.raiseEvent();
+  // this.onChangeRaiser.raiseEvent();
 }
 
 /**
